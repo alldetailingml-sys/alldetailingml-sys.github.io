@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ALL DETAILING · Reservá tu turno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #0a0a0b;
+    --panel: #141416;
+    --panel2: #1b1b1e;
+    --linea: #2a2a2f;
+    --dorado: #d4af37;
+    --dorado2: #f1d27a;
+    --rojo: #d7263d;
+    --rojo2: #ff3b52;
+    --texto: #f3f0e8;
+    --gris: #a19d93;
+    --gris2: #6d6a63;
+    --radio: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--negro); color: var(--texto); }
+  body { font: 15px/1.5 Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+
+  /* ---------- encabezado ---------- */
+  header.hero {
+    position: relative; overflow: hidden; text-align: center;
+    padding: 40px 16px 30px;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(212,175,55,.20), transparent 60%),
+      linear-gradient(180deg, #121214, var(--negro));
+    border-bottom: 1px solid var(--linea);
+  }
+  header.hero::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--rojo) 25%, var(--dorado) 50%, var(--rojo) 75%, transparent);
+  }
+  .logo { font-family: "Bebas Neue", Impact, sans-serif; font-size: clamp(44px, 12vw, 72px); letter-spacing: .06em; line-height: .9; margin: 0; }
+  .logo .all { color: var(--texto); }
+  .logo .det { background: linear-gradient(180deg, var(--dorado2), var(--dorado) 55%, #9c7c1e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tag { margin: 10px 0 0; color: var(--gris); letter-spacing: .18em; text-transform: uppercase; font-size: 12px; font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+  .chip { border: 1px solid var(--linea); background: rgba(255,255,255,.03); border-radius: 999px; padding: 6px 12px; font-size: 13px; color: var(--texto); }
+  .chip b { color: var(--dorado); font-weight: 600; }
+
+  /* ---------- pasos ---------- */
+  section.paso { margin-top: 30px; }
+  .paso h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; font-size: 28px; letter-spacing: .04em; }
+  .paso h2 .n { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--rojo); color: #fff; font: 700 15px Inter, sans-serif; flex: none; }
+  .ayuda { margin: -6px 0 14px; color: var(--gris); font-size: 14px; }
+
+  /* ---------- servicios ---------- */
+  .servicios { display: grid; gap: 12px; }
+  .serv {
+    position: relative; text-align: left; width: 100%; cursor: pointer;
+    background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio);
+    padding: 16px 16px 14px; transition: border-color .15s, transform .15s, background .15s;
+  }
+  .serv:hover { border-color: #3a3a40; }
+  .serv[aria-pressed="true"] { border-color: var(--dorado); background: linear-gradient(180deg, rgba(212,175,55,.08), var(--panel) 60%); box-shadow: 0 0 0 1px var(--dorado) inset; }
+  .serv-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .serv h3 { margin: 0; font-size: 17px; font-weight: 700; }
+  .precio { color: var(--dorado); font-weight: 700; white-space: nowrap; font-size: 15px; }
+  .precio.consultar { color: var(--gris); font-weight: 500; font-size: 13px; }
+  .serv p { margin: 6px 0 0; color: var(--gris); font-size: 14px; }
+  .serv ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+  .serv li { position: relative; padding-left: 20px; font-size: 14px; color: #dcd8cf; }
+  .serv li::before { content: ""; position: absolute; left: 3px; top: 8px; width: 7px; height: 7px; background: var(--dorado); transform: rotate(45deg); }
+  .serv .dur { margin-top: 10px; font-size: 12px; color: var(--gris2); }
+  .check { position: absolute; top: -9px; right: 12px; background: var(--dorado); color: #111; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 9px; display: none; }
+  .serv[aria-pressed="true"] .check { display: block; }
+
+  /* ---------- calendario ---------- */
+  .dias { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .dias::-webkit-scrollbar { height: 6px; } .dias::-webkit-scrollbar-thumb { background: var(--linea); border-radius: 3px; }
+  .dia {
+    flex: none; scroll-snap-align: start; width: 68px; padding: 10px 0 9px; text-align: center; cursor: pointer;
+    background: var(--panel); border: 1px solid var(--linea); border-radius: 12px;
+  }
+  .dia .dw { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gris); font-weight: 600; }
+  .dia .dn { display: block; font-family: "Bebas Neue", Impact, sans-serif; font-size: 30px; line-height: 1.05; }
+  .dia .dm { display: block; font-size: 11px; color: var(--gris); text-transform: capitalize; }
+  .dia .libres { display: block; margin-top: 4px; font-size: 10px; font-weight: 600; color: var(--dorado); }
+  .dia.lleno .libres { color: var(--rojo2); }
+  .dia.lleno { opacity: .55; }
+  .dia[aria-pressed="true"] { background: var(--dorado); border-color: var(--dorado); color: #111; opacity: 1; }
+  .dia[aria-pressed="true"] .dw, .dia[aria-pressed="true"] .dm, .dia[aria-pressed="true"] .libres { color: #3b300c; }
+
+  .franja { margin-top: 14px; }
+  .franja h4 { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gris); font-weight: 600; }
+  .horas { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+  .hora {
+    padding: 12px 0; text-align: center; cursor: pointer; font-weight: 600; font-size: 16px;
+    background: var(--panel); border: 1px solid var(--linea); border-radius: 10px;
+  }
+  .hora:hover:not(:disabled) { border-color: var(--dorado); }
+  .hora:disabled { cursor: not-allowed; color: var(--gris2); background: transparent; text-decoration: line-through; text-decoration-color: var(--rojo); }
+  .hora[aria-pressed="true"] { background: var(--rojo); border-color: var(--rojo); color: #fff; }
+  .vacio { padding: 18px; border: 1px dashed var(--linea); border-radius: var(--radio); color: var(--gris); text-align: center; font-size: 14px; }
+
+  /* ---------- formulario ---------- */
+  form { display: grid; gap: 12px; }
+  .fila { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+  label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: #dcd8cf; }
+  label small { font-weight: 400; color: var(--gris2); }
+  input, textarea {
+    width: 100%; font: 16px Inter, sans-serif; color: var(--texto);
+    background: var(--panel); border: 1px solid var(--linea); border-radius: 10px; padding: 12px 13px;
+  }
+  textarea { min-height: 76px; resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: var(--dorado); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+  .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .resumen { background: var(--panel2); border: 1px solid var(--linea); border-left: 3px solid var(--dorado); border-radius: 12px; padding: 14px 16px; font-size: 14px; display: grid; gap: 4px; }
+  .resumen b { color: var(--dorado); font-weight: 600; }
+  .resumen .falta { color: var(--gris2); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    padding: 16px 18px; border-radius: 12px; border: 0; cursor: pointer; text-decoration: none;
+    font-weight: 700; font-size: 16px; letter-spacing: .02em;
+  }
+  .btn-rojo { background: linear-gradient(180deg, var(--rojo2), var(--rojo)); color: #fff; box-shadow: 0 8px 24px -10px rgba(215,38,61,.7); }
+  .btn-rojo:disabled { background: #3a2a2d; color: #8d7b7e; box-shadow: none; cursor: not-allowed; }
+  .btn-wa { background: #25d366; color: #0b2e17; }
+  .btn-sec { background: transparent; color: var(--texto); border: 1px solid var(--linea); }
+  .error { color: var(--rojo2); font-size: 14px; min-height: 1em; margin: 0; }
+
+  /* ---------- confirmación ---------- */
+  .ok { text-align: center; padding: 36px 18px; margin-top: 30px; background: var(--panel); border: 1px solid var(--dorado); border-radius: 18px; }
+  .ok .sello { width: 64px; height: 64px; margin: 0 auto 10px; border-radius: 50%; display: grid; place-items: center; background: var(--dorado); color: #111; font-size: 34px; font-weight: 700; }
+  .ok h2 { font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; font-size: 36px; letter-spacing: .04em; margin: 0; }
+  .ok .resumen { text-align: left; margin: 18px 0; }
+  .ok p { color: var(--gris); margin: 6px 0 0; }
+  .ok .acciones { display: grid; gap: 10px; margin-top: 18px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--linea); color: var(--gris); font-size: 13px; text-align: center; display: grid; gap: 4px; }
+  footer a { color: var(--dorado); text-decoration: none; }
+  .demo { background: var(--rojo); color: #fff; text-align: center; font-size: 12px; font-weight: 600; padding: 6px 10px; }
+  .cargando { text-align: center; color: var(--gris); padding: 40px 0; }
+  [hidden] { display: none !important; }
+
+  @media (min-width: 640px) {
+    .servicios { grid-template-columns: 1fr 1fr; }
+    .dia { width: 76px; }
+  }
+  @media (max-width: 420px) { .fila { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="demo" id="demo" hidden>Vista de prueba: las reservas no se guardan.</div>
+
+<header class="hero">
+  <h1 class="logo"><span class="all">ALL</span> <span class="det">DETAILING</span></h1>
+  <p class="tag"><span style="white-space:nowrap">Lavadero y detailing</span> · <span style="white-space:nowrap">Camionetas y 4x4</span></p>
+  <div class="chips">
+    <span class="chip"><b>Lun a Sáb</b></span>
+    <span class="chip">Mañana <b>8 a 13 hs</b></span>
+    <span class="chip">Tarde <b>15 a 19 hs</b></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="cargando" class="cargando">Cargando turnos…</div>
+
+  <div id="reserva" hidden>
+    <section class="paso" id="paso1">
+      <h2><span class="n">1</span>Elegí el servicio</h2>
+      <div class="servicios" id="servicios"></div>
+    </section>
+
+    <section class="paso" id="paso2">
+      <h2><span class="n">2</span>Elegí día y horario</h2>
+      <p class="ayuda" id="ayudaDia">Tocá un día para ver los horarios libres.</p>
+      <div class="dias" id="dias" role="group" aria-label="Días"></div>
+      <div id="horas"></div>
+    </section>
+
+    <section class="paso" id="paso3">
+      <h2><span class="n">3</span>Tus datos</h2>
+      <form id="form" novalidate>
+        <div class="fila">
+          <label>Nombre y apellido
+            <input id="nombre" autocomplete="name" maxlength="80" required>
+          </label>
+          <label>WhatsApp <small>con característica, sin 0 ni 15</small>
+            <input id="whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="2262 123456" required>
+          </label>
+        </div>
+        <div class="fila">
+          <label>Vehículo <small>marca y modelo</small>
+            <input id="vehiculo" maxlength="80" placeholder="Toyota Hilux" required>
+          </label>
+          <label>Patente <small>opcional</small>
+            <input id="patente" maxlength="12" autocapitalize="characters">
+          </label>
+        </div>
+        <label>Comentario <small>opcional</small>
+          <textarea id="comentario" maxlength="300" placeholder="Ej.: tiene mucho barro, pelos de perro…"></textarea>
+        </label>
+        <div class="trampa" aria-hidden="true"><label>Web <input id="web" tabindex="-1" autocomplete="off"></label></div>
+
+        <div class="resumen" id="resumen"></div>
+        <p class="error" id="error" role="alert"></p>
+        <button class="btn btn-rojo" id="enviar" type="submit" disabled>Reservar turno</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="ok" id="ok" hidden>
+    <div class="sello">✓</div>
+    <h2>¡Turno reservado!</h2>
+    <p>Último paso: mandanos el mensaje por WhatsApp para confirmar.</p>
+    <div class="resumen" id="okResumen"></div>
+    <div class="acciones">
+      <a class="btn btn-wa" id="okWa" target="_blank" rel="noopener">Enviar confirmación por WhatsApp</a>
+      <p class="error" id="okSinWa" hidden>Falta cargar el WhatsApp del negocio en la planilla (hoja Ajustes).</p>
+      <button class="btn btn-sec" id="otro" type="button">Reservar otro turno</button>
+    </div>
+  </div>
+
+  <footer id="pie"></footer>
+</main>
+
+<script>window.API_URL = 'https://script.google.com/macros/s/AKfycbwR9umxNDrY-r9mA_DZTVm2mnhDqlLqLzk6v4djKAjVg5d5Jf_zc5k84TlFhJAZMnW5vw/exec'; window.onerror = function (m, s, l) { var c = document.getElementById('cargando'); if (c && !c.hidden) c.textContent = 'No se pudo cargar (' + m + ', línea ' + l + '). Recargá la página.'; };</script>
+<script>
+(function () {
+const IS_GAS = /^https:\/\//.test(window.API_URL || '');
+const DIAS_ES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const DIAS_LARGO = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+const st = { datos: null, servicio: null, fecha: null, hora: null };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* ---------------- servidor (o demo fuera de Google) ---------------- */
+async function api(fn, ...args) {
+  if (!IS_GAS) return DEMO[fn](...args);
+  let url = window.API_URL + '?api=' + (fn === 'reservar' ? 'reservar' : 'datos') + '&t=' + Date.now();
+  if (fn === 'reservar') url += '&d=' + encodeURIComponent(JSON.stringify(args[0]));
+  let r;
+  try { r = await fetch(url).then((x) => x.json()); }
+  catch (e) { throw new Error('No hay conexión. Revisá internet y probá de nuevo.'); }
+  if (!r || !r.ok) throw new Error((r && r.error) || 'Algo falló. Probá de nuevo.');
+  return r.data;
+}
+
+const DEMO = (() => {
+  const HORARIOS = ['08:00', '09:00', '10:00', '11:00', '12:00', '15:00', '16:00', '17:00', '18:00'];
+  const servicios = [
+    { id: 'lavado', nombre: 'Lavado detallado', descripcion: 'Lavado completo por dentro y por fuera, a mano y con productos de pH neutro.', incluye: ['Prelavado y lavado a mano con shampoo de pH neutro en toda la carrocería', 'Limpieza de pasarruedas, llantas e interior de llantas', 'Encerado rápido', 'Aspirado y limpieza de interior', 'Rehabilitación de plásticos interiores', 'Acondicionador de cubiertas', 'Limpieza de vidrios'], precio: null, ocupa: 1 },
+    { id: 'encerado', nombre: 'Encerado en pasta', descripcion: 'Cera en pasta aplicada a mano para dar brillo profundo y proteger la pintura. Se contrata aparte.', incluye: ['Cera en pasta Vonixx', 'Aplicación y retiro 100 % a mano'], precio: null, ocupa: 1 },
+    { id: 'abrillantado', nombre: 'Abrillantado', descripcion: 'Lavado detallado más descontaminación y pulido en un solo paso para recuperar el brillo de la pintura.', incluye: ['Lavado detallado completo', 'Descontaminación de pintura con clay bar', 'Pulido de un solo paso'], precio: null, ocupa: 1 },
+    { id: 'opticas', nombre: 'Pulido de ópticas', descripcion: 'Recuperamos la transparencia de las ópticas opacas o amarillentas.', incluye: ['Lijado de ópticas', 'Pulido de ópticas', 'Sellado con cera (protección por 6 meses)'], precio: null, ocupa: 1 },
+    { id: 'ceramico', nombre: 'Tratamiento cerámico', descripcion: 'La protección más completa: lavado, descontaminación, pulido y sellado cerámico de la pintura.', incluye: ['Lavado detallado completo', 'Descontaminación de pintura', 'Pulido', 'Sellado cerámico'], precio: null, ocupa: 1 }
+  ];
+  const pad = (n) => String(n).padStart(2, '0');
+  const iso = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const dias = [];
+  const ahora = new Date();
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i, 12);
+    if (d.getDay() === 0) continue;
+    const f = iso(d);
+    dias.push({ fecha: f, slots: HORARIOS.map((h, j) => {
+      const pasado = new Date(f + 'T' + h + ':00') <= new Date(Date.now() + 3600000);
+      return { hora: h, libre: !pasado };
+    }) });
+  }
+  return {
+    getDatos: () => new Promise((ok) => setTimeout(() => ok({ negocio: { whatsapp: '5492262367716', direccion: '', instagram: '' }, servicios, horarios: HORARIOS, dias }), 300)),
+    reservar: (d) => new Promise((ok) => setTimeout(() => ok({ id: 'AD-0001', fecha: d.fecha, hora: d.hora, servicio: servicios.find((s) => s.id === d.servicio).nombre, whatsapp: '5492262367716' }), 500))
+  };
+})();
+
+/* ---------------- utilidades ---------------- */
+function fechaObj(f) { const [y, m, d] = f.split('-').map(Number); return new Date(y, m - 1, d, 12); }
+function fechaLarga(f) { const d = fechaObj(f); return DIAS_LARGO[d.getDay()] + ' ' + d.getDate() + ' de ' + ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][d.getMonth()]; }
+function fechaCorta(f) { const d = fechaObj(f); return DIAS_ES[d.getDay()] + ' ' + String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0'); }
+function precio(p) { return p ? '$ ' + Number(p).toLocaleString('es-AR') : null; }
+function servSel() { return st.datos.servicios.find((s) => s.id === st.servicio) || null; }
+
+/** ¿Se puede empezar este servicio a esta hora? (necesita "ocupa" turnos seguidos libres) */
+function entra(dia, i, ocupa) {
+  if (i + ocupa > dia.slots.length) return false;
+  for (let k = 0; k < ocupa; k++) if (!dia.slots[i + k].libre) return false;
+  return true;
+}
+function libresDelDia(dia) {
+  const ocupa = servSel() ? servSel().ocupa : 1;
+  return dia.slots.filter((_, i) => entra(dia, i, ocupa)).length;
+}
+
+/* ---------------- render ---------------- */
+function renderServicios() {
+  $('servicios').innerHTML = st.datos.servicios.map((s) => `
+    <div class="serv" role="button" tabindex="0" data-id="${esc(s.id)}" aria-pressed="${s.id === st.servicio}">
+      <span class="check">Elegido</span>
+      <div class="serv-top">
+        <h3>${esc(s.nombre)}</h3>
+        ${precio(s.precio) ? `<span class="precio">${precio(s.precio)}</span>` : `<span class="precio consultar">Consultá el precio</span>`}
+      </div>
+      ${s.descripcion ? `<p>${esc(s.descripcion)}</p>` : ''}
+      ${s.incluye.length ? `<ul>${s.incluye.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${s.ocupa > 1 ? `<div class="dur">Ocupa ${s.ocupa} turnos seguidos</div>` : ''}
+    </div>`).join('');
+}
+
+function renderDias() {
+  const dias = st.datos.dias;
+  if (!dias.length) { $('dias').innerHTML = ''; return; }
+  $('dias').innerHTML = dias.map((d) => {
+    const o = fechaObj(d.fecha); const n = libresDelDia(d);
+    return `<button type="button" class="dia ${n ? '' : 'lleno'}" data-f="${d.fecha}" aria-pressed="${d.fecha === st.fecha}">
+      <span class="dw">${DIAS_ES[o.getDay()]}</span><span class="dn">${o.getDate()}</span><span class="dm">${MESES[o.getMonth()]}</span>
+      <span class="libres">${n ? n + (n === 1 ? ' libre' : ' libres') : 'Completo'}</span></button>`;
+  }).join('');
+}
+
+function renderHoras() {
+  const dia = st.datos.dias.find((d) => d.fecha === st.fecha);
+  if (!dia) { $('horas').innerHTML = `<div class="vacio">Elegí un día de arriba.</div>`; return; }
+  const ocupa = servSel() ? servSel().ocupa : 1;
+  const btn = (s, i) => `<button type="button" class="hora" data-h="${s.hora}" ${entra(dia, i, ocupa) ? '' : 'disabled'} aria-pressed="${s.hora === st.hora}">${s.hora}</button>`;
+  const man = [], tar = [];
+  dia.slots.forEach((s, i) => (Number(s.hora.slice(0, 2)) < 14 ? man : tar).push(btn(s, i)));
+  const hay = libresDelDia(dia) > 0;
+  $('horas').innerHTML = `
+    <div class="franja"><h4>Mañana · 8 a 13 hs</h4><div class="horas">${man.join('')}</div></div>
+    <div class="franja"><h4>Tarde · 15 a 19 hs</h4><div class="horas">${tar.join('')}</div></div>
+    ${hay ? '' : `<div class="vacio" style="margin-top:12px">Este día está completo. Probá con otro.</div>`}`;
+}
+
+function renderResumen() {
+  const s = servSel();
+  const linea = (k, v) => `<div>${k}: ${v ? `<b>${esc(v)}</b>` : '<span class="falta">sin elegir</span>'}</div>`;
+  $('resumen').innerHTML = linea('Servicio', s && s.nombre) + linea('Día', st.fecha && fechaLarga(st.fecha)) + linea('Horario', st.hora && st.hora + ' hs');
+  $('enviar').disabled = !(s && st.fecha && st.hora);
+}
+
+function renderTodo() { renderServicios(); renderDias(); renderHoras(); renderResumen(); }
+
+function renderPie() {
+  const n = st.datos.negocio; const partes = [];
+  if (n.direccion) partes.push(`<div>📍 ${esc(n.direccion)}</div>`);
+  if (n.instagram) partes.push(`<div><a href="https://instagram.com/${encodeURIComponent(n.instagram)}" target="_blank" rel="noopener">@${esc(n.instagram)}</a></div>`);
+  if (n.whatsapp) partes.push(`<div><a href="https://wa.me/${n.whatsapp}" target="_blank" rel="noopener">Escribinos por WhatsApp</a></div>`);
+  partes.push(`<div>ALL DETAILING · Lunes a sábado de 8 a 13 y de 15 a 19 hs</div>`);
+  $('pie').innerHTML = partes.join('');
+}
+
+/* ---------------- eventos ---------------- */
+$('servicios').addEventListener('click', (e) => {
+  const b = e.target.closest('.serv'); if (!b) return;
+  st.servicio = b.dataset.id;
+  const dia = st.datos.dias.find((d) => d.fecha === st.fecha);
+  if (dia && st.hora) { const i = dia.slots.findIndex((s) => s.hora === st.hora); if (!entra(dia, i, servSel().ocupa)) st.hora = null; }
+  renderTodo();
+  if (!st.fecha) $('paso2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+$('servicios').addEventListener('keydown', (e) => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('serv')) { e.preventDefault(); e.target.click(); }
+});
+$('dias').addEventListener('click', (e) => {
+  const b = e.target.closest('.dia'); if (!b) return;
+  st.fecha = b.dataset.f; st.hora = null;
+  renderDias(); renderHoras(); renderResumen();
+});
+$('horas').addEventListener('click', (e) => {
+  const b = e.target.closest('.hora'); if (!b || b.disabled) return;
+  st.hora = b.dataset.h;
+  renderHoras(); renderResumen();
+  if (servSel()) $('paso3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+$('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('error').textContent = '';
+  const v = (id) => $(id).value.trim();
+  if (!servSel()) return falla('Elegí un servicio.');
+  if (!st.fecha || !st.hora) return falla('Elegí día y horario.');
+  if (v('nombre').length < 2) return falla('Escribí tu nombre.', 'nombre');
+  const tel = v('whatsapp').replace(/\D/g, '');
+  if (tel.length < 8 || tel.length > 15) return falla('Revisá tu número de WhatsApp (con característica, sin 0 ni 15).', 'whatsapp');
+  if (v('vehiculo').length < 2) return falla('Contanos qué vehículo traés (marca y modelo).', 'vehiculo');
+
+  const btn = $('enviar'); btn.disabled = true; btn.textContent = 'Reservando…';
+  try {
+    const r = await api('reservar', { servicio: st.servicio, fecha: st.fecha, hora: st.hora, nombre: v('nombre'), whatsapp: tel, vehiculo: v('vehiculo'), patente: v('patente'), comentario: v('comentario'), web: v('web') });
+    mostrarOk(r, { nombre: v('nombre'), vehiculo: v('vehiculo'), patente: v('patente').toUpperCase(), comentario: v('comentario') });
+  } catch (err) {
+    falla((err && err.message) || 'No se pudo reservar. Probá de nuevo.');
+    recargarDisponibilidad();
+  } finally { btn.textContent = 'Reservar turno'; renderResumen(); }
+});
+
+function falla(msg, campo) { $('error').textContent = msg; if (campo) $(campo).focus(); }
+
+function mostrarOk(r, c) {
+  const vehiculo = c.vehiculo + (c.patente ? ' (' + c.patente + ')' : '');
+  const msg = [
+    '¡Hola ALL DETAILING! Reservé un turno desde la página:',
+    '',
+    '📅 ' + fechaCorta(r.fecha) + ' a las ' + r.hora + ' hs',
+    '🚙 Servicio: ' + r.servicio,
+    '🔧 Vehículo: ' + vehiculo,
+    '👤 Nombre: ' + c.nombre,
+    c.comentario ? '💬 ' + c.comentario : null,
+    '',
+    'Turno N° ' + r.id
+  ].filter((x) => x !== null).join('\n');
+
+  $('okResumen').innerHTML = `<div>Turno: <b>${esc(r.id)}</b></div><div>Servicio: <b>${esc(r.servicio)}</b></div><div>Día: <b>${esc(fechaLarga(r.fecha))}</b></div><div>Horario: <b>${esc(r.hora)} hs</b></div><div>Vehículo: <b>${esc(vehiculo)}</b></div>`;
+  const wa = r.whatsapp || st.datos.negocio.whatsapp;
+  $('okWa').hidden = !wa; $('okSinWa').hidden = !!wa;
+  if (wa) $('okWa').href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
+  $('reserva').hidden = true; $('ok').hidden = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+$('otro').addEventListener('click', async () => {
+  $('form').reset(); st.fecha = null; st.hora = null;
+  $('ok').hidden = true; $('reserva').hidden = false;
+  await recargarDisponibilidad();
+});
+
+async function recargarDisponibilidad() {
+  try { const d = await api('getDatos'); st.datos = d; if (st.fecha && !d.dias.some((x) => x.fecha === st.fecha)) st.fecha = null; } catch (e) { /* se queda con lo que tenía */ }
+  if (st.hora) { const dia = st.datos.dias.find((d) => d.fecha === st.fecha); const i = dia ? dia.slots.findIndex((s) => s.hora === st.hora) : -1; if (!dia || !entra(dia, i, servSel() ? servSel().ocupa : 1)) st.hora = null; }
+  renderTodo();
+}
+
+/* ---------------- arranque ---------------- */
+(async function init() {
+  $('demo').hidden = !!IS_GAS;
+  try {
+    st.datos = await api('getDatos');
+    const primero = st.datos.dias.find((d) => d.slots.some((s) => s.libre));
+    if (primero) st.fecha = primero.fecha;
+    renderTodo(); renderPie();
+    $('cargando').hidden = true; $('reserva').hidden = false;
+  } catch (e) {
+    $('cargando').textContent = 'No se pudieron cargar los turnos. Recargá la página.';
+  }
+})();
+})();
+</script>
+</body>
+</html>
